@@ -33,6 +33,10 @@ public class Discord implements Chatbox {
 
         @Override
         public void onMessageReceived(MessageReceivedEvent event) {
+            if (event.getAuthor().getId().equals(jda.getSelfUser().getId())) {
+                return;
+            }
+
             if (event.isFromType(ChannelType.TEXT)) {
                 String message = event.getMessage().getContentDisplay();
                 instance.input(message, new DiscordOutput(event.getChannel()));
