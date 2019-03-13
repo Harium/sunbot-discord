@@ -24,6 +24,12 @@ public class Discord implements Chatbox {
         jda.addEventListener(new MessageListener(instance));
     }
 
+    @Override
+    public void sendMessage(String channel, String message) {
+        MessageChannel messageChannel = new DiscordChannel(jda, channel);
+        messageChannel.sendMessage(message).queue();
+    }
+
     private class MessageListener extends ListenerAdapter {
         private Instance instance;
 
