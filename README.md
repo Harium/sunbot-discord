@@ -6,9 +6,10 @@ Plugin to turn your Suneidesis Chatbot into a Discord Bot
 <dependency>
     <groupId>com.harium.suneidesis.sunbot</groupId>
     <artifactId>discord</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
+
 
 ## How to use it
 
