@@ -3,10 +3,14 @@ package com.harium.suneidesis.chat.discord;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.utils.MiscUtil;
+
+import java.util.FormattableFlags;
+import java.util.Formatter;
 
 public class DiscordChannel implements MessageChannel {
 
-    ChannelType type = ChannelType.UNKNOWN;
+    private ChannelType type = ChannelType.UNKNOWN;
     private JDA jda;
     private String channel;
 
@@ -49,5 +53,15 @@ public class DiscordChannel implements MessageChannel {
     @Override
     public long getIdLong() {
         return Long.parseLong(channel);
+    }
+
+    @Override
+    public void formatTo(Formatter formatter, int flags, int width, int precision) {
+        boolean leftJustified = (flags & FormattableFlags.LEFT_JUSTIFY) == FormattableFlags.LEFT_JUSTIFY;
+        boolean upper = (flags & FormattableFlags.UPPERCASE) == FormattableFlags.UPPERCASE;
+        //boolean alt = (flags & FormattableFlags.ALTERNATE) == FormattableFlags.ALTERNATE;
+        String out = "#" + (upper ?  getName().toUpperCase(formatter.locale()) : getName());
+
+        MiscUtil.appendTo(formatter, width, precision, leftJustified, out);
     }
 }
