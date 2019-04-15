@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 
 public class Discord implements Chatbox {
 
@@ -56,7 +57,7 @@ public class Discord implements Chatbox {
         }
     }
 
-    class DiscordOutput implements Output {
+    private class DiscordOutput implements Output {
         private MessageChannel channel;
 
         public DiscordOutput(MessageChannel channel) {
@@ -66,6 +67,14 @@ public class Discord implements Chatbox {
         @Override
         public void print(String sentence) {
             channel.sendMessage(sentence).queue();
+        }
+
+        @Override
+        public void produceFile(String path, String description) {
+            File file = new File(path);
+            if (file.exists()) {
+                channel.sendFile(file, description);
+            }
         }
     }
 }
