@@ -1,8 +1,10 @@
 package com.harium.suneidesis.chat.discord;
 
-import com.harium.suneidesis.instance.Instance;
-import com.harium.suneidesis.knowledge.linguistic.core.box.Chatbox;
-import com.harium.suneidesis.output.Output;
+
+import com.harium.suneidesis.chat.box.Chatbox;
+import com.harium.suneidesis.chat.instance.Instance;
+import com.harium.suneidesis.chat.output.Output;
+import com.harium.suneidesis.chat.output.OutputContext;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -65,7 +67,7 @@ public class Discord implements Chatbox {
         }
 
         @Override
-        public void print(String sentence) {
+        public void print(String sentence, OutputContext context) {
             channel.sendMessage(sentence).queue();
         }
 
