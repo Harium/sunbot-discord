@@ -7,9 +7,7 @@ Plugin to turn your Suneidesis Chatbot into a Discord Bot
 
 ```
     // Use your own box
-    LanguageBox box = new EchoBox();
-    Instance bot = new Instance("Precious Bot");
-    bot.setLanguageBox(box);
+    ChatBox bot = new EchoBox();
     
     String token = "MY_TOKEN";
     

@@ -1,10 +1,13 @@
 package com.harium.suneidesis.chat.discord;
 
 
-import com.harium.suneidesis.chat.box.Chatbox;
-import com.harium.suneidesis.chat.instance.Instance;
+import com.harium.suneidesis.chat.box.BoxHandler;
+import com.harium.suneidesis.chat.box.ChatBox;
+import com.harium.suneidesis.chat.input.InputContext;
 import com.harium.suneidesis.chat.output.Output;
 import com.harium.suneidesis.chat.output.OutputContext;
+import java.io.File;
+import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -12,10 +15,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import javax.security.auth.login.LoginException;
-import java.io.File;
-
-public class Discord implements Chatbox {
+public class Discord implements BoxHandler {
 
     private JDA jda;
 
@@ -23,7 +23,7 @@ public class Discord implements Chatbox {
         jda = new JDABuilder(token).build();
     }
 
-    public void addInstance(Instance instance) {
+    public void addBox(ChatBox instance) {
         jda.addEventListener(new MessageListener(instance));
     }
 
@@ -34,9 +34,9 @@ public class Discord implements Chatbox {
     }
 
     private class MessageListener extends ListenerAdapter {
-        private Instance instance;
+        private ChatBox instance;
 
-        public MessageListener(Instance instance) {
+        public MessageListener(ChatBox instance) {
             this.instance = instance;
         }
 
@@ -46,16 +46,30 @@ public class Discord implements Chatbox {
                 return;
             }
 
+            InputContext context = buildContext(event);
+
             if (event.isFromType(ChannelType.TEXT)) {
-                String message = event.getMessage().getContentDisplay();
-                instance.input(message, new DiscordOutput(event.getChannel()));
+                instance.input(context, new DiscordOutput(event.getChannel()));
             } else if (event.isFromType(ChannelType.PRIVATE)) {
-                String message = event.getMessage().getContentDisplay();
-                instance.input(message, new DiscordOutput(event.getPrivateChannel()));
+                instance.input(context, new DiscordOutput(event.getPrivateChannel()));
             } else {
                 System.out.printf("%s: %s\n", event.getAuthor().getName(),
                         event.getMessage().getContentDisplay());
             }
+        }
+
+        private InputContext buildContext(MessageReceivedEvent event) {
+            String message = event.getMessage().getContentDisplay();
+
+            InputContext context = new InputContext();
+            context.setSentence(message);
+            context.getProperties().put(InputContext.USER_ID, event.getAuthor().getId());
+            context.getProperties().put(InputContext.USER_USERNAME, event.getAuthor().getId());
+            context.getProperties().put(InputContext.USER_NAME, event.getAuthor().getName());
+            context.getProperties().put(InputContext.CHANNEL_ID, event.getChannel().getId());
+            context.getProperties().put(InputContext.CHANNEL_NAME, event.getChannel().getName());
+
+            return context;
         }
     }
 
